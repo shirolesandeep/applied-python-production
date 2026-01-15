@@ -1,13 +1,8 @@
 import logging
 
 
-def setup_logging() -> None:
-    """
-    Configure application-wide logging.
-
-    This must be called ONCE at the entry point.
-    """
+def setup_logging(log_level: str) -> None:
     logging.basicConfig(
-        level=logging.INFO,
+        level=getattr(logging, log_level),
         format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
     )
