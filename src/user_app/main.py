@@ -6,11 +6,9 @@ from user_app.services.user_service import UserService
 def main() -> None:
     config = load_config()
     setup_logging(config.log_level)
-    #print(f"Running in {config.env} environment")
 
     service = UserService('{"name": "Amit", "age": 20}')
-    result = service.process()
-    print(result)
+    print(service.process())
 
 
 if __name__ == "__main__":

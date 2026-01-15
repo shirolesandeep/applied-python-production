@@ -3,6 +3,7 @@ import logging
 from typing import Dict
 
 logger = logging.getLogger(__name__)
+#logger.warning("This is a test warning")
 
 
 class UserService:

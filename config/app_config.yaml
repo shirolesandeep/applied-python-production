@@ -1,0 +1,9 @@
+app:
+  name: user-service
+  timeout_seconds: 30
+
+logging:
+  level: WARNING
+
+features:
+  enable_metrics: True
