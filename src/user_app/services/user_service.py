@@ -26,9 +26,17 @@ class UserService:
         logger.info("User age validated: %s", age)
         return age >= 18
 
-    def process(self) -> str:
+
+    def process(self, verbose: bool = False) -> str:
         logger.info("Starting user processing")
         self.parse_user()
+
+        if verbose:
+            logger.info("Verbose mode enabled: user data = %s", self.user)
+
         result = "User is adult" if self.is_adult() else "User is minor"
         logger.info("Processing result: %s", result)
         return result
+
+
+    

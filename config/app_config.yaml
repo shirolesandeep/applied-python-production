@@ -3,7 +3,8 @@ app:
   timeout_seconds: 30
 
 logging:
-  level: WARNING
+  level: INFO
 
 features:
-  enable_metrics: True
+  enable_metrics: false
+  enable_verbose_output: true

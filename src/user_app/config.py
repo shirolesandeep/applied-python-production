@@ -13,6 +13,7 @@ class AppConfig:
     log_level: str
     timeout_seconds: int
     enable_metrics: bool
+    enable_verbose_output: bool
 
 
 def _load_yaml_config() -> Dict[str, Any]:
@@ -31,56 +32,45 @@ def _load_yaml_config() -> Dict[str, Any]:
 
 def load_config() -> AppConfig:
     """
-    Load configuration with EXPLICIT precedence:
+    Configuration precedence (LOW → HIGH):
 
-    1. Code defaults (lowest priority)
-    2. YAML config file
-    3. Environment variables (highest priority)
-
-    This function FAILS FAST on invalid configuration.
+    1. Code defaults
+    2. YAML config
+    3. Environment variables
     """
-    # Load .env for local development (does NOT override OS env)
+    # Load .env for local development
     load_dotenv()
 
     # -------------------------
-    # Environment (dev/staging/prod)
+    # Environment
     # -------------------------
     env = os.getenv("APP_ENV", "dev").lower()
-
-    allowed_envs = {"dev", "staging", "prod"}
-    if env not in allowed_envs:
+    if env not in {"dev", "staging", "prod"}:
         raise ValueError(f"Invalid APP_ENV value: {env}")
 
     # -------------------------
-    # Load YAML defaults
+    # YAML config
     # -------------------------
     raw_config = _load_yaml_config()
 
-    # ---- YAML values ----
     yaml_log_level = raw_config.get("logging", {}).get("level")
     yaml_timeout = raw_config.get("app", {}).get("timeout_seconds", 30)
-    yaml_metrics = raw_config.get("features", {}).get("enable_metrics", False)
+
+    features = raw_config.get("features", {})
+    yaml_enable_metrics = features.get("enable_metrics", False)
+    yaml_enable_verbose = features.get("enable_verbose_output", False)
 
     # -------------------------
-    # Log level precedence (IMPORTANT)
+    # Log level precedence
     # -------------------------
-    # 1. ENV override
-    # 2. YAML value
-    # 3. Environment-based default
-    log_level = os.getenv("LOG_LEVEL")
-
-    if not log_level:
-        log_level = yaml_log_level
-
+    log_level = os.getenv("LOG_LEVEL") or yaml_log_level
     if not log_level:
         log_level = "DEBUG" if env == "dev" else "INFO"
 
-    # -------------------------
-    # Final validated config
-    # -------------------------
     return AppConfig(
         env=env,
         log_level=str(log_level).upper(),
         timeout_seconds=int(yaml_timeout),
-        enable_metrics=bool(yaml_metrics),
+        enable_metrics=bool(yaml_enable_metrics),
+        enable_verbose_output=bool(yaml_enable_verbose),
     )
