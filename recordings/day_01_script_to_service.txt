@@ -1,0 +1,7 @@
+Day 1 Video Outline
+
+- Why script-style code fails
+- Walk through bad_script.py
+- Introduce service class
+- Refactor step-by-step
+- Compare before vs after
